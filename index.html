@@ -426,15 +426,42 @@ function tickCountdown() {
     return;
   }
 
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
+ const TARGET = new Date('2026-04-29T19:00:00+03:00').getTime();
+
+function tickCountdown() {
+  const now = Date.now();
+  const diff = TARGET - now;
+  const el = document.getElementById('countdown');
+  if (!el) return;
+
+  if (diff <= 0) {
+    el.textContent = '🍕 встреча идёт — беги в 10-Q';
+    return;
+  }
+
+  const hours = Math.floor(diff / 3600000);
   const mins = Math.floor((diff % 3600000) / 60000);
 
+  // Календарные дни считаем по московской полуночи
+  const MSK_OFFSET = 3 * 60 * 60 * 1000;
+  const nowMsk = new Date(now + MSK_OFFSET);
+  const targetMsk = new Date(TARGET + MSK_OFFSET);
+  const nowMidnight = Date.UTC(nowMsk.getUTCFullYear(), nowMsk.getUTCMonth(), nowMsk.getUTCDate());
+  const targetMidnight = Date.UTC(targetMsk.getUTCFullYear(), targetMsk.getUTCMonth(), targetMsk.getUTCDate());
+  const calendarDays = Math.round((targetMidnight - nowMidnight) / 86400000);
+
   let text;
-  if (days > 1) text = `⏱ ${days} дн ${hours} ч до пиццы`;
-  else if (days === 1) text = `⏱ завтра, через ${hours} ч ${mins} мин`;
-  else if (hours > 1) text = `🔥 уже сегодня, через ${hours} ч ${mins} мин`;
-  else text = `🚨 через ${hours * 60 + mins} минут — выдвигайся`;
+  if (calendarDays > 2) {
+    text = `⏱ ${calendarDays} дн до пиццы`;
+  } else if (calendarDays === 2) {
+    text = `⏱ послезавтра, в 19:00`;
+  } else if (calendarDays === 1) {
+    text = `⏱ завтра, через ${hours} ч ${mins} мин`;
+  } else if (hours > 1) {
+    text = `🔥 уже сегодня, через ${hours} ч ${mins} мин`;
+  } else {
+    text = `🚨 через ${hours * 60 + mins} минут — выдвигайся`;
+  }
 
   el.textContent = text;
 }
