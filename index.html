@@ -417,18 +417,6 @@
 const TARGET = new Date('2026-04-29T19:00:00+03:00').getTime();
 
 function tickCountdown() {
-  const diff = TARGET - Date.now();
-  const el = document.getElementById('countdown');
-  if (!el) return;
-
-  if (diff <= 0) {
-    el.textContent = '🍕 встреча идёт — беги в 10-Q';
-    return;
-  }
-
- const TARGET = new Date('2026-04-29T19:00:00+03:00').getTime();
-
-function tickCountdown() {
   const now = Date.now();
   const diff = TARGET - now;
   const el = document.getElementById('countdown');
@@ -442,7 +430,8 @@ function tickCountdown() {
   const hours = Math.floor(diff / 3600000);
   const mins = Math.floor((diff % 3600000) / 60000);
 
-  // Календарные дни считаем по московской полуночи
+  // Считаем календарные дни: сколько полночей между сейчас и встречей
+  // Используем московское время (+03:00) для расчёта календарных дней
   const MSK_OFFSET = 3 * 60 * 60 * 1000;
   const nowMsk = new Date(now + MSK_OFFSET);
   const targetMsk = new Date(TARGET + MSK_OFFSET);
